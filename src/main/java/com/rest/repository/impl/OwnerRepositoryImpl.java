@@ -12,22 +12,29 @@ import com.rest.repository.OwnerRepository;
 @Repository
 public class OwnerRepositoryImpl implements OwnerRepository{
 
-	private HashMap<String, OwnerEntity> nameOwnerMap;
+	private HashMap<String, OwnerEntity> ownerMap;
 	
 	public OwnerRepositoryImpl(){
-		nameOwnerMap = new HashMap<>();
+		ownerMap = new HashMap<>();
 	}
 	
 	@Override
 	public Optional<OwnerEntity> getOwnerById(String nameId) {
 		
-		return Optional.ofNullable(nameOwnerMap.get(nameId));
+		return Optional.ofNullable(ownerMap.get(nameId));
 	}
 
 	@Override
 	public void save(String nameId,OwnerEntity ownerEnitity) {
 		// TODO Auto-generated method stub
-		nameOwnerMap.put(nameId, ownerEnitity);
+		ownerMap.put(nameId, ownerEnitity);
+		
+	}
+
+	@Override
+	public Optional<OwnerEntity> getOwnerEntity(String addPhoneId) {
+		// TODO Auto-generated method stub
+		return Optional.ofNullable(ownerMap.get(addPhoneId));
 		
 	}
 

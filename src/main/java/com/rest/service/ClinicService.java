@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.jayway.jsonpath.Option;
 import com.rest.entity.OwnerEntity;
 import com.rest.repository.OwnerRepository;
 import com.rest.resource.OwnerRequestResource;
@@ -20,19 +21,24 @@ public class ClinicService {
 	@Autowired
 	private OwnerRepository ownerRepository;
 	
+	public String getAddressPhoneId(String address,String phoneNumber){
+			String addPhoneId = address + "#" + phoneNumber; 
+		
+		return addPhoneId;
+	}
+	
 	public OwnerEntity handle(OwnerRequestResource ownerRequestResource){
 		
 		OwnerEntity ownerEntity = new OwnerEntity();
 		BeanUtils.copyProperties(ownerRequestResource, ownerEntity);
 		
-		String uniqueId = ownerEntity.getAddress() + 
-				          "#" + ownerEntity.getTelephone(); 
-		Optional<OwnerEntity> owner = ownerRepository.getOwnerById(uniqueId);
+		String addPhoneId = getAddressPhoneId(ownerEntity.getAddress(),ownerEntity.getTelephone());
+		Optional<OwnerEntity> owner = ownerRepository.getOwnerById(addPhoneId);
 		
 		if(owner.isPresent())
 			com.rest.utils.ExceptionUtils.throwEntityAlreadyEistException("Entity Already Exist");
 		else
-			ownerRepository.save(uniqueId, ownerEntity);
+			ownerRepository.save(addPhoneId, ownerEntity);
 		
 		return ownerEntity;
 	}
@@ -47,6 +53,19 @@ public class ClinicService {
 	public OwnerEntity register(OwnerRequestResource ownerRequestResource){
 	
 		return handle(preHandle(ownerRequestResource));
+	}
+
+	public OwnerEntity getOwnerEntityByFirstName(String address,String phoneNumber) {
+		
+		String addPhoneId = getAddressPhoneId(address,phoneNumber);
+		
+		Optional<OwnerEntity> ownerEntity = ownerRepository.getOwnerEntity(addPhoneId);
+		
+		if(ownerEntity.isPresent() == false){
+			com.rest.utils.ExceptionUtils.throwEntityNotFoundException("Entity Not FOund");
+		}
+		
+		return ownerEntity.get();
 	}
 
 }

@@ -9,13 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-
-
-
-
-
-
 import com.google.common.net.MediaType;
 import com.rest.assembler.OwnerAssembler;
 import com.rest.entity.OwnerEntity;
@@ -35,6 +28,12 @@ public class OwnerRestController {
 			@org.springframework.web.bind.annotation.RequestBody  OwnerRequestResource ownerRequestResource){
 		
 		return new ResponseEntity<>(OwnerAssembler.convert(clinicService.register(ownerRequestResource)),HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value="owner/address/{address}/phnNumber/{number}",method = RequestMethod.GET , produces = "application/json; charset=UTF-8")
+	public ResponseEntity<OwnerResponseResource> getOwnerByFirstName(@PathVariable("address") String address, @PathVariable("number") String number){
+		
+		return new ResponseEntity<>(OwnerAssembler.convert(clinicService.getOwnerEntityByFirstName(address,number)),HttpStatus.OK);
 	}
 	
 	
